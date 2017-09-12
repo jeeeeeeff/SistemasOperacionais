@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
                   final += result[i];
             }
 
-            printf("Resultado %.20f\n", final*4);
+            printf("Resultado %.10f\n", final*4);
             exit(0);
       }
 
