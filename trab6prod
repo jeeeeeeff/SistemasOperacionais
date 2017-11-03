@@ -3,24 +3,26 @@ sems *las;
 
 int main(int argc, char *argv[])
 {
-    alarm(200);
-    printf("%s\n", argv[1]);
-    int idM = atoi(argv[1]);
+    int idM = atoi(argv[1]), nro;
+    nro = atoi(argv[2]);
+    //printf("%d Ready to produce!!\n", nro);
     las = shmat(idM, 0, 0);
+    init(las);
+    srand(getpid());
+    
     while(1)
     {
-        sleep(rand() % 15);
-
-        int random = rand() % 50;
+        int item = rand() % 100;
         sem_wait(&(las->empty));
-        pthread_mutex_lock(&(las->prod));
-
-        if(!insert_item(las, random))
-            printf("Inserido item: %d\n", random);
+        sem_wait(&(las->mprod));
+        int slip = rand() % seed;
+        if(!insert_item(las, item))
+            printf("%d I:%d Q:%d S:%d\n", nro, item, las->qtde, slip);
         else
             fprintf(stderr, "Produtor em condição de erro: Algo deu ruim\n");
 
-        pthread_mutex_unlock(&(las->prod));
+        sem_post(&(las->mprod));
         sem_post(&(las->full));
+        sleep(slip);
     }
 }
