@@ -3,24 +3,26 @@ sems *las;
 
 int main(int argc, char *argv[])
 {
-    alarm(200);
-    int idM = atoi(argv[1]);
-    printf("P: alo %d\n", idM);
+    int idM = atoi(argv[1]), nro;
+    nro = atoi(argv[2]);
+    //printf("%d Ready to consume!!\n", nro);
     las = shmat(idM, 0, 0);
+    init(las);
+    srand(getpid());
+
     while(1)
     {
         int item = 0;
-        sleep(rand() % 15);
-
         sem_wait(&(las->full));
-        pthread_mutex_lock(&(las->cons));
-
+        sem_wait(&(las->mcons));
+        int slip = rand() % seed;
         if(!remove_item(las, &item))
-            printf("Consumindo %d\n", item);
+            printf("%d C:%d Q:%d S:%d\n", nro, item, las->qtde, slip);
         else
             fprintf(stderr, "Consimudor em erro: Algo deu ruim\n");
 
-        pthread_mutex_unlock(&(las->cons));
+        sem_post(&(las->mcons));
         sem_post(&(las->empty));
+        sleep(slip);
     }
 }
