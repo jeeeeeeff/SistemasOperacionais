@@ -1,2 +1,2 @@
 # SistemasOperacionais
-Minhas coisas de sistemas operacionais
+Pode usar a vontade mas aprenda o que os códigos fazem. Obrigado.
